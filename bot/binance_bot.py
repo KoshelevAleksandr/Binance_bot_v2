@@ -4,6 +4,7 @@ import request_binance
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
+
 import sql_db
 from dotenv import find_dotenv, load_dotenv
 from sql_db import BotDB
@@ -21,7 +22,8 @@ BotDB = BotDB('bot_db.db')
 
 
 class Form(StatesGroup):
-    currency = State()
+    min_price = State()
+    max_price = State()
 
 
 @dp.message_handler(commands=['start', 'help'])
@@ -35,7 +37,7 @@ async def start(message: types.Message):
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
         b1 = types.KeyboardButton('/Узнать_цену_BTC')
         b2 = types.KeyboardButton('/Изменить_валюту')
-        b3 = types.KeyboardButton('/Задать_границы_уведомления')
+        b3 = types.KeyboardButton('/Границы_уведомления')
         keyboard.row(b1, b2).row(b3)
         await message.answer(text='Выберете действие', reply_markup=keyboard)
 
@@ -45,7 +47,7 @@ async def main_menu(message: types.Message):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     b1 = types.KeyboardButton('/Узнать_цену_BTC')
     b2 = types.KeyboardButton('/Изменить_валюту')
-    b3 = types.KeyboardButton('/Задать_границы_уведомления')
+    b3 = types.KeyboardButton('/Границы_уведомления')
     keyboard.row(b1, b2).row(b3)
     await message.answer(text='Выберете действие', reply_markup=keyboard)
 
@@ -69,7 +71,7 @@ async def select_currency(message: types.Message):
     await message.answer(text='Выберете валюту в которой хотите получать цену BTC', reply_markup=keyboard)
 
 
-@dp.message_handler(commands=['Задать_границы_уведомления'])
+@dp.message_handler(commands=['Границы_уведомления'])
 async def set_borders(message: types.Message):
     if BotDB.borders_exists(message.from_user.id):
         min_price = BotDB.get_borders(message.from_user.id)[0]
@@ -77,22 +79,20 @@ async def set_borders(message: types.Message):
     else:
         min_price = 'None'
         max_price = 'None'
-    await message.answer(text=f'Текущие границы:\nmin_price = {min_price}\nmax_price = {max_price}')
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    b1 = types.KeyboardButton('/max_price')
-    b2 = types.KeyboardButton('/min_price')
-    b3 = types.KeyboardButton('/Главное_меню')
-    keyboard.row(b1, b2).row(b3)
-    await message.answer(text='Какую границу желаете изменить', reply_markup=keyboard)
+    b1 = types.KeyboardButton('/Изменить_границы')
+    b2 = types.KeyboardButton('/Главное_меню')
+    keyboard.row(b1).row(b2)
+    await message.answer(text=f'Текущие границы:\nmin_price = {min_price}\nmax_price = {max_price}', reply_markup=keyboard)
 
-@dp.message_handler(commands=['min_price'])
+
+@dp.message_handler(commands=['Изменить_границы'])
 async def set_min_border(message: types.Message):
-    BotDB.set_min_price(message.from_user.id, )
-
-
-@dp.message_handler(commands=['max_price'])
-async def set_min_border(message: types.Message):
-    BotDB.set_max_price(message.from_user.id, )
+    min_price = 1
+    max_price = 1
+    BotDB.set_min_price(message.from_user.id, min_price)
+    BotDB.set_min_price(message.from_user.id, max_price)
+    await message.answer(text=f'Новые границы:\nmin_price = {min_price}\nmax_price = {max_price}')
 
 
 @dp.message_handler(content_types=['text'])

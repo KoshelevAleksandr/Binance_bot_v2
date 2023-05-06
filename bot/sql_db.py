@@ -60,11 +60,11 @@ class BotDB:
         result = self.cursor.execute("SELECT min_price, max_price FROM records WHERE user_id = ?", (user_id,))
         return result.fetchone()
 
-    def set_min_price(self, user_id):
-        result = self.cursor.execute("SELECT * FROM records WHERE user_id = ?", (user_id,))
-        return bool(len(result.fetchall()))
+    def set_min_price(self, user_id, min_price):
+        self.cursor.execute("UPDATE records SET min_price = ? WHERE user_id = ?", (min_price, user_id))
+        return self.conn.commit()
 
-    def set_max_price(self, user_id):
-        result = self.cursor.execute("SELECT * FROM records WHERE user_id = ?", (user_id,))
-        return bool(len(result.fetchall()))
+    def set_max_price(self, user_id, max_price):
+        self.cursor.execute("UPDATE records SET min_price = ? WHERE user_id = ?", (max_price, user_id))
+        return self.conn.commit()
 
