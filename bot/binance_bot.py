@@ -11,7 +11,6 @@ load_dotenv(find_dotenv())
 
 async def on_startup(_):
     print('Бот вышел в онлайн')
-    # sql_db.sql_start()
 
 BotDB = BotDB('bot_db.db')
 bot = Bot(token=os.getenv('TOKEN'))
@@ -28,3 +27,4 @@ async def start(message: types.Message):
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
+
