@@ -38,6 +38,7 @@ class BotDB:
     def add_user(self, user_id):
         """Добавляем юзера в базу"""
         self.cursor.execute("INSERT INTO users (user_id) VALUES (?)", (user_id,))
+        self.cursor.execute("INSERT INTO records (user_id) VALUES (?)", (user_id,))
         return self.conn.commit()
 
     def get_user(self, user_id):
