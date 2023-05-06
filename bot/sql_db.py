@@ -65,6 +65,6 @@ class BotDB:
         return self.conn.commit()
 
     def set_max_price(self, user_id, max_price):
-        self.cursor.execute("UPDATE records SET min_price = ? WHERE user_id = ?", (max_price, user_id))
+        self.cursor.execute("UPDATE records SET max_price = ? WHERE user_id = ?", (max_price, user_id))
         return self.conn.commit()
 
