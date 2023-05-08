@@ -139,6 +139,17 @@ async def save_currency(message: types.Message):
         await default(message)
 
 
+# @dp.message_handler(content_types=['text'])
+# async def save_currency(message: types.Message):
+#     currency = ['usdt', 'eur', 'rub']
+#     if message.text in currency:
+#         BotDB.update_currency(message.from_user.id, message.text)
+#         await message.answer(text=f'Основная валюта изменена на {message.text}')
+#         await main_menu(message)
+#     else:
+#         await default(message)
+
+
 @dp.message_handler()
 async def default(message: types.Message):
     await message.answer(text='Команда не найдена')
